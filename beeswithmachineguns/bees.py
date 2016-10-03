@@ -205,7 +205,7 @@ def up(count, group, zone, image_id, instance_type, username, key_name, subnet, 
                 instance_type=instance_type,
                 placement=placement,
                 subnet_id=subnet,
-		instance_profile_arn=profile)
+                instance_profile_arn=profile)
 
         except boto.exception.EC2ResponseError as e:
             print("Unable to call bees:", e.message)
@@ -373,7 +373,6 @@ def _sting(params):
         context = ssl._create_unverified_context()
         response = urlopen(request, context=context)
     else:
-	print repr(request)
         response = urlopen(request)
 
     response.read()
@@ -386,9 +385,11 @@ def _attack(params):
     Intended for use with multiprocessing.
     """
     print('Bee %i is joining the swarm.' % params['i'])
+
     try:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
         pem_path = params.get('key_name') and _get_pem_path(params['key_name']) or None
         if not os.path.isfile(pem_path):
             client.load_system_host_keys()
