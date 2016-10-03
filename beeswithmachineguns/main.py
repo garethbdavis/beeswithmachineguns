@@ -85,7 +85,7 @@ commands:
     up_group.add_option('-b', '--bid', metavar="BID", nargs=1,
                         action='store', dest='bid', type='float', default=None,
                         help="The maximum bid price per spot instance (default: None).")
-    up_group.add_option('-x', '--profile', metavar="PROFILE", nargs=1,
+    up_group.add_option('-q', '--profile', metavar="PROFILE", nargs=1,
                         action='store', dest='profile', type='string', default=None,
                         help="The iam instance profile. (default: None).") 
 
