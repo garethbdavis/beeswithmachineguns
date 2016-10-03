@@ -53,7 +53,7 @@ import time
 from sets import Set
 
 STATE_FILENAME = os.path.expanduser('~/.bees')
-
+HEADER = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11'}
 # Utilities
 
 @contextmanager
@@ -117,7 +117,7 @@ def _get_security_group_id(connection, security_group_name, subnet):
 
 # Methods
 
-def up(count, group, zone, image_id, instance_type, username, key_name, subnet, bid = None):
+def up(count, group, zone, image_id, instance_type, username, key_name, subnet, bid = None, profile = None):
     """
     Startup the load testing server.
     """
@@ -185,7 +185,8 @@ def up(count, group, zone, image_id, instance_type, username, key_name, subnet, 
             security_group_ids=[groupId],
             instance_type=instance_type,
             placement=placement,
-            subnet_id=subnet)
+            subnet_id=subnet,
+            instance_profile_arn=profile)
 
         # it can take a few seconds before the spot requests are fully processed
         time.sleep(5)
@@ -203,7 +204,8 @@ def up(count, group, zone, image_id, instance_type, username, key_name, subnet, 
                 security_group_ids=[groupId],
                 instance_type=instance_type,
                 placement=placement,
-                subnet_id=subnet)
+                subnet_id=subnet,
+                instance_profile_arn=profile)
 
         except boto.exception.EC2ResponseError as e:
             print("Unable to call bees:", e.message)
@@ -333,7 +335,7 @@ def _sting(params):
     basic_auth = params['basic_auth']
 
     # Create request
-    request = Request(url)
+    request = Request(url, headers=HEADER)
 
     # Need to revisit to support all http verbs.
     if post_file:
@@ -873,7 +875,7 @@ def hurl_attack(url, n, c, **options):
 
     print('Stinging URL so it will be cached for the attack.')
 
-    request = Request(url)
+    request = Request(url, headers=HEADER)
     # Need to revisit to support all http verbs.
     if post_file:
         try:
