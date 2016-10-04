@@ -743,12 +743,12 @@ def attack(url, n, c, **options):
             'headers': headers,
             'contenttype': contenttype,
             'cookies': cookies,
-            'post_file': options.get('post_file'),
-            'keep_alive': options.get('keep_alive'),
+            'post_file': post_file,
+            'keep_alive': keep_alive,
             'mime_type': options.get('mime_type', ''),
             'tpr': options.get('tpr'),
             'rps': options.get('rps'),
-            'basic_auth': options.get('basic_auth')
+            'basic_auth': basic_auth
         })
 
     if sting == 1:
@@ -781,6 +781,8 @@ def attack(url, n, c, **options):
         else:
             print('Your targets performance tests meet our standards, the Queen sends her regards.')
             sys.exit(0)
+    else:
+        return summarized_results
 
 #############################
 ### hurl version methods, ###
