@@ -99,7 +99,7 @@ commands:
                             action='store', dest='url', type='string',
                             help="URL of the target to attack.")
     attack_group.add_option('-K', '--keepalive', metavar="KEEP_ALIVE", nargs=0,
-                            action='store', dest='keep_alive', type='string', default=False,
+                            action='store_true', dest='keep_alive', type='string', default=False,
                             help="Keep-Alive connection.")
     attack_group.add_option('-p', '--post-file',  metavar="POST_FILE",  nargs=1,
                             action='store', dest='post_file', type='string', default=False,
