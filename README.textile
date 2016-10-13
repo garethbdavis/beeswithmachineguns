@@ -225,8 +225,7 @@ Options:
     the URL you wish to target.
 
     -u URL, --url=URL   URL of the target to attack.
-    -K KEEP_ALIVE, --keepalive=KEEP_ALIVE
-                        Keep-Alive connection.
+    -K, --keepalive     Keep-Alive connection.
     -p POST_FILE, --post-file=POST_FILE
                         The POST file to deliver with the bee's payload.
     -m MIME_TYPE, --mime-type=MIME_TYPE
