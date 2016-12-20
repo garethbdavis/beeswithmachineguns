@@ -384,8 +384,8 @@ def _attack(params):
 
     Intended for use with multiprocessing.
     """
-    print('Bee %i is joining the swarm.' % params['i'])
 
+    print('Bee %i is joining the swarm.' % params['i'])
     try:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -402,6 +402,40 @@ def _attack(params):
 
         print('Bee %i is firing her machine gun. Bang bang!' % params['i'])
 
+        # Get the xsrf token
+        xsrf_token = ''
+        if params['xsrf_data'] is not '':
+            xsrf_command = "curl --cookie-jar cookie_file " + params['xsrf_data']['url'] + " && cat cookie_file | grep " + params['xsrf_data']['cookie_name'] + " | awk -v ORS='' '{print $NF}'"
+            stdin, stdout, stderr = client.exec_command(xsrf_command)
+            xsrf_token = stdout.readlines()[0]
+
+            if params['cookies'] is not '':
+                params['cookies'] += ';' + params['xsrf_data']['cookie_name'] + '=' + xsrf_token
+            else:
+                params['cookies'] = params['xsrf_data']['cookie_name'] + '=' + xsrf_token
+
+            if params['xsrf_data']['header_name'] is not '':
+                if params['headers'] is not '':
+                    params['headers'] += ';' + params['xsrf_data']['header_name'] + ':' + xsrf_token
+                else:
+                    params['headers'] = params['xsrf_data']['header_name'] + ':' + xsrf_token
+
+        # Get an authenticated session
+        auth_command = ''
+        if params['session_data'] is not '':
+            if params['xsrf_data']['header_name'] is not '':
+                auth_command = "curl -s --cookie cookie_file -H '" + params['xsrf_data']['header_name'] + ": " + xsrf_token + "' --data '"+ params['session_data']['user_identifier'] + "=" + params['session_data']['user'] + "&" + params['session_data']['password_identifier'] + "=" + params['session_data']['password'] + "' --cookie-jar - " + params['session_data']['url'] + " | grep " + params['session_data']['cookie_name'] + " | awk -v ORS='' '{print $NF}'"
+            else:
+                auth_command = "curl -s --cookie cookie_file --data '"+ params['session_data']['user_identifier'] + "=" + params['session_data']['user'] + "&" + params['session_data']['password_identifier'] + "=" + params['session_data']['password'] + "' --cookie-jar - " + params['session_data']['url'] + " | grep " + params['session_data']['cookie_name'] + " | awk -v ORS='' '{print $NF}'"
+
+            stdin, stdout, stderr = client.exec_command(auth_command)
+            bf_cookie = stdout.readlines()[0]
+
+            if params['cookies'] is not '':
+                params['cookies'] += ';' + params['session_data']['cookie_name'] + '=' + bf_cookie
+            else:
+                params['cookies'] = params['session_data']['cookie_name'] + '=' + bf_cookie
+
         options = ''
         if params['headers'] is not '':
             for h in params['headers'].split(';'):
@@ -410,6 +444,9 @@ def _attack(params):
 
         if params['contenttype'] is not '':
             options += ' -T %s' % params['contenttype']
+
+        if params['ignore_variable_length_response']:
+            options += ' -l'
 
         stdin, stdout, stderr = client.exec_command('mktemp')
         # paramiko's read() returns bytes which need to be converted back to a str
@@ -430,7 +467,7 @@ def _attack(params):
             options += ' -k'
 
         if params['cookies'] is not '':
-            options += ' -H \"Cookie: %s;sessionid=NotARealSessionID;\"' % params['cookies']
+            options += ' -H \"Cookie:%s;\"' % params['cookies']
         else:
             options += ' -C \"sessionid=NotARealSessionID\"'
 
@@ -748,7 +785,10 @@ def attack(url, n, c, **options):
             'mime_type': options.get('mime_type', ''),
             'tpr': options.get('tpr'),
             'rps': options.get('rps'),
-            'basic_auth': basic_auth
+            'basic_auth': basic_auth,
+            'xsrf_data': options.get('xsrf_data', ''),
+            'session_data': options.get('session_data', ''),
+            'ignore_variable_length_response': options.get('ignore_variable_length_response', False)
         })
 
     if sting == 1:
