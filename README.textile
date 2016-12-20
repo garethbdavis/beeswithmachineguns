@@ -1,5 +1,8 @@
 h4. Bees with Machine Guns!
 
+PLEASE NOTE: This is an experimental fork that attempts to support authentication and xsrf tokens/headers on a per-bee level.
+Changes made here may be brittle, it is recommended that you use https://github.com/newsapps/beeswithmachineguns.
+
 A utility for arming (creating) many bees (micro EC2 instances) to attack (load test) targets (web applications).
 
 Also, retribution for "this shameful act":http://kottke.org/10/10/tiny-catapult-for-throwing-pies-at-bees against a proud hive.
