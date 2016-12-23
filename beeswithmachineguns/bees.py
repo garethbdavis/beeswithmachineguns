@@ -117,7 +117,7 @@ def _get_security_group_id(connection, security_group_name, subnet):
 
 # Methods
 
-def up(count, group, zone, image_id, instance_type, username, key_name, subnet, bid = None, profile = None):
+def up(count, group, zone, image_id, instance_type, username, key_name, subnet, bid = None, profile = None, delay = 0):
     """
     Startup the load testing server.
     """
@@ -239,6 +239,11 @@ def up(count, group, zone, image_id, instance_type, username, key_name, subnet, 
     ec2_connection.create_tags(instance_ids, { "Name": "a bee!" })
 
     _write_server_list(username, key_name, zone, instances)
+
+    # Additional sleep
+    if delay > 0:
+        print('Giving the bees a little more time to get themselves ready')
+        time.sleep(delay)
 
     print('The swarm has assembled %i bees.' % len(instances))
 

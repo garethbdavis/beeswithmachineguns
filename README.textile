@@ -171,7 +171,7 @@ h4. Examples
 
 <pre>
 $ ./bees --help
-Usage: 
+Usage:
 bees COMMAND [options]
 
 Bees with Machine Guns
@@ -184,7 +184,7 @@ commands:
   attack  Begin the attack on a specific url.
   down    Shutdown and deactivate the load testing servers.
   report  Report the status of the load testing servers.
-    
+
 
 Options:
   -h, --help            show this help message and exit
@@ -222,6 +222,9 @@ Options:
                         None).
     -q PROFILE, --profile=PROFILE
                         The iam instance profile. (default: None).
+    -D DELAY, --delay=DELAY
+                        Additional delay in seconds between bringing up bees
+                        and attacking. (default: 0).
 
   attack:
     Beginning an attack requires only that you specify the -u option with
