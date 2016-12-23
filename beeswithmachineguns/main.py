@@ -87,7 +87,10 @@ commands:
                         help="The maximum bid price per spot instance (default: None).")
     up_group.add_option('-q', '--profile', metavar="PROFILE", nargs=1,
                         action='store', dest='profile', type='string', default=None,
-                        help="The iam instance profile. (default: None).") 
+                        help="The iam instance profile. (default: None).")
+    up_group.add_option('-D', '--delay', metavar="DELAY", nargs=1,
+                        action='store', dest='delay', type='int', default=0,
+                        help="Additional delay in seconds between bringing up bees and attacking. (default: 0).")
 
     parser.add_option_group(up_group)
 
@@ -141,7 +144,7 @@ commands:
                             action='store', dest='threads', type='int', default=1,
                             help= "hurl only: Number of parallel threads. Default: 1")
     attack_group.add_option('-f', '--fetches', metavar="FETCHES", nargs=1,
-                            action='store', dest='fetches', type='int', 
+                            action='store', dest='fetches', type='int',
                             help= "hurl only: Num fetches per instance.")
     attack_group.add_option('-d', '--timeout', metavar="TIMEOUT", nargs=1,
                             action='store', dest='timeout', type='int',
@@ -202,11 +205,11 @@ commands:
                                                             options.zone, options.instance,
                                                             options.type,options.login,
                                                             options.key, options.subnet,
-                                                            options.bid,options.profile)).start()
+                                                            options.bid,options.profile,options.delay)).start()
                     #time allowed between threads
                     time.sleep(delay)
         else:
-            bees.up(options.servers, options.group, options.zone, options.instance, options.type, options.login, options.key, options.subnet, options.bid, options.profile)
+            bees.up(options.servers, options.group, options.zone, options.instance, options.type, options.login, options.key, options.subnet, options.bid, options.profile, options.delay)
 
     elif command == 'attack':
         if not options.url:
